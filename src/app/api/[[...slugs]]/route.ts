@@ -4,11 +4,9 @@ import { nanoid } from 'nanoid';
 import { authMiddleware } from './auth';
 import z from 'zod';
 import { Message, realtime } from '@/lib/realtime';
-import { cors } from '@elysiajs/cors';
+import cors from '@elysiajs/cors';
 
 const ROOM_TTL_SECONDS = 60 * 10;
-
-new Elysia().use(cors()).listen(3000);
 
 const rooms = new Elysia({ prefix: '/room' })
   .post('/create', async () => {
@@ -98,7 +96,7 @@ const messages = new Elysia({ prefix: '/messages' })
     { query: z.object({ roomId: z.string() }) },
   );
 
-const app = new Elysia({ prefix: '/api' }).use(rooms).use(messages);
+const app = new Elysia({ prefix: '/api' }).use(rooms).use(messages).use(cors());
 
 export const GET = app.fetch;
 export const POST = app.fetch;
